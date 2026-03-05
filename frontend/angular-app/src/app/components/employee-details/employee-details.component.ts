@@ -22,17 +22,17 @@ import { Employee } from '../../models/employee.model';
     <div class="employee-details-container" *ngIf="employee">
       <mat-card>
         <mat-card-header>
-          <mat-card-title>Employee Details</mat-card-title>
+          <mat-card-title>Detalles del Empleado</mat-card-title>
           <div class="header-actions">
             <button mat-raised-button color="primary" 
                     (click)="editEmployee()">
               <mat-icon>edit</mat-icon>
-              Edit
+              Editar
             </button>
             <button mat-raised-button color="warn" 
                     (click)="deleteEmployee()">
               <mat-icon>delete</mat-icon>
-              Delete
+              Eliminar
             </button>
           </div>
         </mat-card-header>
@@ -40,18 +40,18 @@ import { Employee } from '../../models/employee.model';
         <mat-card-content>
           <div class="employee-info">
             <div class="info-section">
-              <h3>Personal Information</h3>
+              <h3>Información Personal</h3>
               <div class="info-grid">
                 <div class="info-item">
-                  <label>First Name:</label>
+                  <label>Nombre:</label>
                   <span>{{ employee.firstName }}</span>
                 </div>
                 <div class="info-item">
-                  <label>Last Name:</label>
+                  <label>Apellido:</label>
                   <span>{{ employee.lastName }}</span>
                 </div>
                 <div class="info-item">
-                  <label>Email:</label>
+                  <label>Correo Electrónico:</label>
                   <span>{{ employee.email }}</span>
                 </div>
               </div>
@@ -60,18 +60,18 @@ import { Employee } from '../../models/employee.model';
             <mat-divider></mat-divider>
 
             <div class="info-section">
-              <h3>Professional Information</h3>
+              <h3>Información Profesional</h3>
               <div class="info-grid">
                 <div class="info-item">
-                  <label>Position:</label>
+                  <label>Cargo:</label>
                   <span>{{ employee.position }}</span>
                 </div>
                 <div class="info-item">
-                  <label>Hire Date:</label>
+                  <label>Fecha de Contratación:</label>
                   <span>{{ employee.hireDate | date:'mediumDate' }}</span>
                 </div>
                 <div class="info-item">
-                  <label>Salary:</label>
+                  <label>Salario:</label>
                   <span>{{ employee.salary | currency:'USD':'symbol':'1.2-2' }}</span>
                 </div>
               </div>
@@ -82,14 +82,14 @@ import { Employee } from '../../models/employee.model';
         <mat-card-actions>
           <button mat-button (click)="goBack()">
             <mat-icon>arrow_back</mat-icon>
-            Back to List
+            Volver a la Lista
           </button>
         </mat-card-actions>
       </mat-card>
     </div>
 
     <div class="loading-container" *ngIf="!employee">
-      <p>Loading employee details...</p>
+      <p>Cargando detalles del empleado...</p>
     </div>
   `,
   styles: [`
@@ -207,7 +207,7 @@ export class EmployeeDetailsComponent implements OnInit {
   }
 
   deleteEmployee(): void {
-    if (this.employee && confirm('Are you sure you want to delete this employee?')) {
+    if (this.employee && confirm('¿Está seguro de que desea eliminar este empleado?')) {
       this.employeeService.deleteEmployee(this.employee.id).subscribe({
         next: () => {
           this.router.navigate(['/employees']);

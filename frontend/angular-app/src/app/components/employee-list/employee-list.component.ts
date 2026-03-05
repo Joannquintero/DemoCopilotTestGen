@@ -37,14 +37,14 @@ import { Employee } from '../../models/employee.model';
         <mat-card-header>
           <mat-card-title>
             <div class="header-actions">
-              <h2>Employee Management</h2>
+              <h2>Gestión de Empleados</h2>
               <div class="actions">
                 <mat-form-field appearance="outline" class="search-field">
-                  <mat-label>Search employees...</mat-label>
+                  <mat-label>Buscar empleados...</mat-label>
                   <input matInput 
                          [(ngModel)]="searchTerm" 
                          (input)="onSearchChange()"
-                         placeholder="Search by name or position">
+                         placeholder="Buscar por nombre o cargo">
                   <mat-icon matSuffix>search</mat-icon>
                 </mat-form-field>
                 <button 
@@ -52,7 +52,7 @@ import { Employee } from '../../models/employee.model';
                   color="primary" 
                   (click)="createEmployee()">
                   <mat-icon>person_add</mat-icon>
-                  Add Employee
+                  Agregar Empleado
                 </button>
               </div>
             </div>
@@ -62,77 +62,77 @@ import { Employee } from '../../models/employee.model';
         <mat-card-content>
           <div class="loading-container" *ngIf="employeeService.loading()">
             <mat-spinner></mat-spinner>
-            <p>Loading employees...</p>
+            <p>Cargando empleados...</p>
           </div>
 
           <div class="error-container" *ngIf="employeeService.error()">
             <mat-icon color="warn">error</mat-icon>
             <p>{{ employeeService.error() }}</p>
             <button mat-raised-button color="primary" (click)="refreshEmployees()">
-              Try Again
+              Intentar de nuevo
             </button>
           </div>
 
           <div class="table-container" *ngIf="!employeeService.loading() && !employeeService.error()">
             <table mat-table [dataSource]="filteredEmployees()" class="employees-table">
               <ng-container matColumnDef="fullName">
-                <th mat-header-cell *matHeaderCellDef>Full Name</th>
+                <th mat-header-cell *matHeaderCellDef>Nombre Completo</th>
                 <td mat-cell *matCellDef="let employee">
                   <strong>{{ employee.fullName }}</strong>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef>Email</th>
+                <th mat-header-cell *matHeaderCellDef>Correo Electrónico</th>
                 <td mat-cell *matCellDef="let employee">
                   <a href="mailto:{{ employee.email }}">{{ employee.email }}</a>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="position">
-                <th mat-header-cell *matHeaderCellDef>Position</th>
+                <th mat-header-cell *matHeaderCellDef>Cargo</th>
                 <td mat-cell *matCellDef="let employee">
                   {{ employee.position }}
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="salary">
-                <th mat-header-cell *matHeaderCellDef>Salary</th>
+                <th mat-header-cell *matHeaderCellDef>Salario</th>
                 <td mat-cell *matCellDef="let employee">
                   {{ employee.salary | currency:'USD':'symbol':'1.0-0' }}
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="hireDate">
-                <th mat-header-cell *matHeaderCellDef>Hire Date</th>
+                <th mat-header-cell *matHeaderCellDef>Fecha de Contratación</th>
                 <td mat-cell *matCellDef="let employee">
                   {{ employee.hireDate | date:'shortDate' }}
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef>Actions</th>
+                <th mat-header-cell *matHeaderCellDef>Acciones</th>
                 <td mat-cell *matCellDef="let employee">
                   <div class="action-buttons">
                     <button 
                       mat-icon-button 
                       color="primary"
                       (click)="viewEmployee(employee.id)"
-                      matTooltip="View Details">
+                      matTooltip="Ver Detalles">
                       <mat-icon>visibility</mat-icon>
                     </button>
                     <button 
                       mat-icon-button 
                       color="accent"
                       (click)="editEmployee(employee.id)"
-                      matTooltip="Edit Employee">
+                      matTooltip="Editar Empleado">
                       <mat-icon>edit</mat-icon>
                     </button>
                     <button 
                       mat-icon-button 
                       color="warn"
                       (click)="confirmDelete(employee)"
-                      matTooltip="Delete Employee">
+                      matTooltip="Eliminar Empleado">
                       <mat-icon>delete</mat-icon>
                     </button>
                   </div>
@@ -145,16 +145,16 @@ import { Employee } from '../../models/employee.model';
 
             <div class="no-data" *ngIf="filteredEmployees().length === 0">
               <mat-icon>people_outline</mat-icon>
-              <h3>No employees found</h3>
-              <p *ngIf="searchTerm">Try adjusting your search criteria.</p>
-              <p *ngIf="!searchTerm">Start by adding your first employee.</p>
+              <h3>No se encontraron empleados</h3>
+              <p *ngIf="searchTerm">Intente ajustar sus criterios de búsqueda.</p>
+              <p *ngIf="!searchTerm">Comience agregando su primer empleado.</p>
               <button 
                 mat-raised-button 
                 color="primary" 
                 (click)="createEmployee()"
                 *ngIf="employeeService.employees().length === 0">
                 <mat-icon>person_add</mat-icon>
-                Add First Employee
+                Agregar Primer Empleado
               </button>
             </div>
           </div>
@@ -322,7 +322,7 @@ export class EmployeeListComponent implements OnInit {
   }
 
   confirmDelete(employee: Employee): void {
-    if (confirm(`Are you sure you want to delete ${employee.fullName}?`)) {
+    if (confirm(`¿Está seguro de que desea eliminar a ${employee.fullName}?`)) {
       this.deleteEmployee(employee.id);
     }
   }
@@ -330,13 +330,13 @@ export class EmployeeListComponent implements OnInit {
   private deleteEmployee(id: number): void {
     this.employeeService.deleteEmployee(id).subscribe({
       next: () => {
-        this.snackBar.open('Employee deleted successfully', 'Close', {
+        this.snackBar.open('Empleado eliminado exitosamente', 'Cerrar', {
           duration: 3000,
           panelClass: ['success-snackbar']
         });
       },
       error: () => {
-        this.snackBar.open('Failed to delete employee', 'Close', {
+        this.snackBar.open('Error al eliminar empleado', 'Cerrar', {
           duration: 3000,
           panelClass: ['error-snackbar']
         });

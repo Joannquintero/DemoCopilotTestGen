@@ -28,8 +28,7 @@ public class CreateEmployeeDtoValidator : AbstractValidator<CreateEmployeeDto>
             .GreaterThan(0).WithMessage("Salary must be greater than zero");
 
         RuleFor(x => x.HireDate)
-            .NotEmpty().WithMessage("Hire date is required")
-            .LessThanOrEqualTo(DateTime.Today).WithMessage("Hire date cannot be in the future");
+            .NotEmpty().WithMessage("Hire date is required");
     }
 }
 
@@ -58,7 +57,6 @@ public class UpdateEmployeeDtoValidator : AbstractValidator<UpdateEmployeeDto>
             .GreaterThan(0).WithMessage("Salary must be greater than zero");
 
         RuleFor(x => x.HireDate)
-            .NotEmpty().WithMessage("Hire date is required")
-            .LessThanOrEqualTo(DateTime.Today).WithMessage("Hire date cannot be in the future");
+            .NotEmpty().WithMessage("Hire date is required");
     }
 }

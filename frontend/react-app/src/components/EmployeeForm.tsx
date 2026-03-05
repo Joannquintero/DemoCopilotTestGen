@@ -71,7 +71,7 @@ const EmployeeForm: React.FC = () => {
   if (isEditing && isLoadingEmployee) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Loading employee data...</div>
+        <div className="text-lg">Cargando datos del empleado...</div>
       </div>
     );
   }
@@ -80,26 +80,26 @@ const EmployeeForm: React.FC = () => {
     <div className="max-w-2xl mx-auto mt-8 p-6">
       <div className="bg-white rounded-lg shadow-md p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-6">
-          {isEditing ? 'Edit Employee' : 'Add New Employee'}
+          {isEditing ? 'Editar Empleado' : 'Agregar Nuevo Empleado'}
         </h1>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
-                First Name <span className="text-red-500">*</span>
+                Nombre <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 id="firstName"
                 {...register('firstName', {
-                  required: 'First name is required',
-                  maxLength: { value: 50, message: 'First name must be at most 50 characters' }
+                  required: 'El nombre es obligatorio',
+                  maxLength: { value: 50, message: 'El nombre debe tener máximo 50 caracteres' }
                 })}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                   errors.firstName ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="Enter first name"
+                placeholder="Ingrese el nombre"
               />
               {errors.firstName && (
                 <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
@@ -108,19 +108,19 @@ const EmployeeForm: React.FC = () => {
 
             <div>
               <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
-                Last Name <span className="text-red-500">*</span>
+                Apellido <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 id="lastName"
                 {...register('lastName', {
-                  required: 'Last name is required',
-                  maxLength: { value: 50, message: 'Last name must be at most 50 characters' }
+                  required: 'El apellido es obligatorio',
+                  maxLength: { value: 50, message: 'El apellido debe tener máximo 50 caracteres' }
                 })}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                   errors.lastName ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="Enter last name"
+                placeholder="Ingrese el apellido"
               />
               {errors.lastName && (
                 <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
@@ -130,22 +130,22 @@ const EmployeeForm: React.FC = () => {
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email <span className="text-red-500">*</span>
+              Correo Electrónico <span className="text-red-500">*</span>
             </label>
             <input
               type="email"
               id="email"
               {...register('email', {
-                required: 'Email is required',
+                required: 'El correo electrónico es obligatorio',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address'
+                  message: 'Dirección de correo electrónico inválida'
                 }
               })}
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                 errors.email ? 'border-red-500' : 'border-gray-300'
               }`}
-              placeholder="Enter email address"
+              placeholder="Ingrese el correo electrónico"
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -154,19 +154,19 @@ const EmployeeForm: React.FC = () => {
 
           <div>
             <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-2">
-              Position <span className="text-red-500">*</span>
+              Cargo <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="position"
               {...register('position', {
-                required: 'Position is required',
-                maxLength: { value: 100, message: 'Position must be at most 100 characters' }
+                required: 'El cargo es obligatorio',
+                maxLength: { value: 100, message: 'El cargo debe tener máximo 100 caracteres' }
               })}
               className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                 errors.position ? 'border-red-500' : 'border-gray-300'
               }`}
-              placeholder="Enter position"
+              placeholder="Ingrese el cargo"
             />
             {errors.position && (
               <p className="mt-1 text-sm text-red-600">{errors.position.message}</p>
@@ -176,7 +176,7 @@ const EmployeeForm: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label htmlFor="salary" className="block text-sm font-medium text-gray-700 mb-2">
-                Salary <span className="text-red-500">*</span>
+                Salario <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
@@ -184,13 +184,13 @@ const EmployeeForm: React.FC = () => {
                 min="0"
                 step="0.01"
                 {...register('salary', {
-                  required: 'Salary is required',
-                  min: { value: 0, message: 'Salary must be a positive number' }
+                  required: 'El salario es obligatorio',
+                  min: { value: 0, message: 'El salario debe ser un número positivo' }
                 })}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                   errors.salary ? 'border-red-500' : 'border-gray-300'
                 }`}
-                placeholder="Enter salary"
+                placeholder="Ingrese el salario"
               />
               {errors.salary && (
                 <p className="mt-1 text-sm text-red-600">{errors.salary.message}</p>
@@ -199,13 +199,13 @@ const EmployeeForm: React.FC = () => {
 
             <div>
               <label htmlFor="hireDate" className="block text-sm font-medium text-gray-700 mb-2">
-                Hire Date <span className="text-red-500">*</span>
+                Fecha de Contratación <span className="text-red-500">*</span>
               </label>
               <input
                 type="date"
                 id="hireDate"
                 {...register('hireDate', {
-                  required: 'Hire date is required'
+                  required: 'La fecha de contratación es obligatoria'
                 })}
                 className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
                   errors.hireDate ? 'border-red-500' : 'border-gray-300'
@@ -223,14 +223,14 @@ const EmployeeForm: React.FC = () => {
               onClick={() => navigate('/employees')}
               className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              Cancel
+              Cancelar
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Saving...' : isEditing ? 'Update Employee' : 'Create Employee'}
+              {isSubmitting ? 'Guardando...' : isEditing ? 'Actualizar Empleado' : 'Crear Empleado'}
             </button>
           </div>
         </form>

@@ -11,7 +11,7 @@ const EmployeeDetails: React.FC = () => {
   const deleteEmployee = useDeleteEmployee();
 
   const handleDelete = async () => {
-    if (window.confirm('Are you sure you want to delete this employee?')) {
+    if (window.confirm('¿Está seguro de que desea eliminar este empleado?')) {
       try {
         await deleteEmployee.mutateAsync(employeeId);
         navigate('/employees');
@@ -40,16 +40,16 @@ const EmployeeDetails: React.FC = () => {
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error loading employee</h3>
+              <h3 className="text-sm font-medium text-red-800">Error al cargar empleado</h3>
               <div className="mt-2 text-sm text-red-700">
-                The employee could not be found or there was an error loading the data.
+                No se pudo encontrar el empleado o hubo un error al cargar los datos.
               </div>
               <div className="mt-3">
                 <Link
                   to="/employees"
                   className="text-sm font-medium text-red-800 underline hover:text-red-600"
                 >
-                  Return to employee list
+                  Volver a la lista de empleados
                 </Link>
               </div>
             </div>
@@ -63,12 +63,12 @@ const EmployeeDetails: React.FC = () => {
     return (
       <div className="max-w-2xl mx-auto mt-8 p-6">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Employee not found</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Empleado no encontrado</h2>
           <Link
             to="/employees"
             className="text-blue-600 hover:text-blue-500"
           >
-            Return to employee list
+            Volver a la lista de empleados
           </Link>
         </div>
       </div>
@@ -110,7 +110,7 @@ const EmployeeDetails: React.FC = () => {
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
-                Edit
+                Editar
               </Link>
               <button
                 onClick={handleDelete}
@@ -120,7 +120,7 @@ const EmployeeDetails: React.FC = () => {
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
-                {deleteEmployee.isPending ? 'Deleting...' : 'Delete'}
+                {deleteEmployee.isPending ? 'Eliminando...' : 'Eliminar'}
               </button>
             </div>
           </div>
@@ -130,17 +130,17 @@ const EmployeeDetails: React.FC = () => {
         <div className="px-6 py-6">
           <dl className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
             <div>
-              <dt className="text-sm font-medium text-gray-500 mb-1">First Name</dt>
+              <dt className="text-sm font-medium text-gray-500 mb-1">Nombre</dt>
               <dd className="text-sm text-gray-900">{employee.firstName}</dd>
             </div>
 
             <div>
-              <dt className="text-sm font-medium text-gray-500 mb-1">Last Name</dt>
+              <dt className="text-sm font-medium text-gray-500 mb-1">Apellido</dt>
               <dd className="text-sm text-gray-900">{employee.lastName}</dd>
             </div>
 
             <div>
-              <dt className="text-sm font-medium text-gray-500 mb-1">Email</dt>
+              <dt className="text-sm font-medium text-gray-500 mb-1">Correo Electrónico</dt>
               <dd className="text-sm text-gray-900">
                 <a
                   href={`mailto:${employee.email}`}
@@ -152,30 +152,30 @@ const EmployeeDetails: React.FC = () => {
             </div>
 
             <div>
-              <dt className="text-sm font-medium text-gray-500 mb-1">Position</dt>
+              <dt className="text-sm font-medium text-gray-500 mb-1">Cargo</dt>
               <dd className="text-sm text-gray-900">{employee.position}</dd>
             </div>
 
             <div>
-              <dt className="text-sm font-medium text-gray-500 mb-1">Salary</dt>
+              <dt className="text-sm font-medium text-gray-500 mb-1">Salario</dt>
               <dd className="text-sm text-gray-900">{formatCurrency(employee.salary)}</dd>
             </div>
 
             <div>
-              <dt className="text-sm font-medium text-gray-500 mb-1">Hire Date</dt>
+              <dt className="text-sm font-medium text-gray-500 mb-1">Fecha de Contratación</dt>
               <dd className="text-sm text-gray-900">{formatDate(employee.hireDate)}</dd>
             </div>
 
             {employee.createdAt && (
               <div>
-                <dt className="text-sm font-medium text-gray-500 mb-1">Created</dt>
+                <dt className="text-sm font-medium text-gray-500 mb-1">Creado</dt>
                 <dd className="text-sm text-gray-900">{formatDate(employee.createdAt)}</dd>
               </div>
             )}
 
             {employee.updatedAt && (
               <div>
-                <dt className="text-sm font-medium text-gray-500 mb-1">Last Updated</dt>
+                <dt className="text-sm font-medium text-gray-500 mb-1">Última Actualización</dt>
                 <dd className="text-sm text-gray-900">{formatDate(employee.updatedAt)}</dd>
               </div>
             )}
@@ -192,7 +192,7 @@ const EmployeeDetails: React.FC = () => {
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
-              Back to employee list
+              Volver a la lista de empleados
             </Link>
           </div>
         </div>

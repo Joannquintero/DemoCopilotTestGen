@@ -20,13 +20,13 @@ const EmployeeList: React.FC = () => {
   }, [employees, searchTerm]);
 
   const handleDelete = async (employee: Employee) => {
-    if (window.confirm(`Are you sure you want to delete ${employee.fullName}?`)) {
+    if (window.confirm(`¿Está seguro de que desea eliminar a ${employee.fullName}?`)) {
       try {
         await deleteEmployee.mutateAsync(employee.id);
         // Success message will be handled by the mutation
       } catch (error) {
         console.error('Failed to delete employee:', error);
-        alert('Failed to delete employee. Please try again.');
+        alert('Error al eliminar empleado. Por favor, inténtelo de nuevo.');
       }
     }
   };
@@ -52,7 +52,7 @@ const EmployeeList: React.FC = () => {
     return (
       <div className="flex items-center justify-center min-h-96">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        <span className="ml-3 text-lg">Loading employees...</span>
+        <span className="ml-3 text-lg">Cargando empleados...</span>
       </div>
     );
   }
@@ -61,15 +61,15 @@ const EmployeeList: React.FC = () => {
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
         <div className="text-red-600 text-6xl mb-4">⚠️</div>
-        <h3 className="text-lg font-semibold text-red-800 mb-2">Failed to load employees</h3>
+        <h3 className="text-lg font-semibold text-red-800 mb-2">Error al cargar empleados</h3>
         <p className="text-red-600 mb-4">
-          {error instanceof Error ? error.message : 'An unexpected error occurred'}
+          {error instanceof Error ? error.message : 'Ocurrió un error inesperado'}
         </p>
         <button
           onClick={() => refetch()}
           className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors"
         >
-          Try Again
+          Intentar de nuevo
         </button>
       </div>
     );
@@ -81,16 +81,16 @@ const EmployeeList: React.FC = () => {
       <div className="bg-white shadow-sm rounded-lg p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Employee Management</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Gestión de Empleados</h1>
             <p className="text-gray-600 mt-1">
-              {employees?.length || 0} employee{employees?.length !== 1 ? 's' : ''} total
+              {employees?.length || 0} empleado{employees?.length !== 1 ? 's' : ''} total
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative">
               <input
                 type="text"
-                placeholder="Search employees..."
+                placeholder="Buscar empleados..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full sm:w-80"
@@ -108,7 +108,7 @@ const EmployeeList: React.FC = () => {
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              Add Employee
+              Agregar Empleado
             </Link>
           </div>
         </div>
@@ -119,12 +119,12 @@ const EmployeeList: React.FC = () => {
         <div className="bg-white shadow-sm rounded-lg p-12 text-center">
           <div className="text-gray-400 text-6xl mb-4">👥</div>
           <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {searchTerm ? 'No employees found' : 'No employees yet'}
+            {searchTerm ? 'No se encontraron empleados' : 'Aún no hay empleados'}
           </h3>
           <p className="text-gray-600 mb-6">
             {searchTerm 
-              ? 'Try adjusting your search criteria.' 
-              : 'Start by adding your first employee.'
+              ? 'Intente ajustar sus criterios de búsqueda.' 
+              : 'Comience agregando su primer empleado.'
             }
           </p>
           {!searchTerm && (
@@ -135,7 +135,7 @@ const EmployeeList: React.FC = () => {
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
-              Add First Employee
+              Agregar Primer Empleado
             </Link>
           )}
         </div>
@@ -146,19 +146,19 @@ const EmployeeList: React.FC = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Employee
+                    Empleado
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Position
+                    Cargo
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Salary
+                    Salario
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Hire Date
+                    Fecha de Contratación
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
+                    Acciones
                   </th>
                 </tr>
               </thead>
@@ -199,20 +199,20 @@ const EmployeeList: React.FC = () => {
                           to={`/employees/${employee.id}`}
                           className="text-blue-600 hover:text-blue-900 font-medium"
                         >
-                          View
+                          Ver
                         </Link>
                         <Link
                           to={`/employees/${employee.id}/edit`}
                           className="text-indigo-600 hover:text-indigo-900 font-medium"
                         >
-                          Edit
+                          Editar
                         </Link>
                         <button
                           onClick={() => handleDelete(employee)}
                           disabled={deleteEmployee.isPending}
                           className="text-red-600 hover:text-red-900 font-medium disabled:opacity-50"
                         >
-                          {deleteEmployee.isPending ? 'Deleting...' : 'Delete'}
+                          {deleteEmployee.isPending ? 'Eliminando...' : 'Eliminar'}
                         </button>
                       </div>
                     </td>

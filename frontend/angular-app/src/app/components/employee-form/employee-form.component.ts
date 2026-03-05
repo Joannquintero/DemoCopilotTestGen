@@ -29,7 +29,7 @@ import { Employee } from '../../models/employee.model';
       <mat-card>
         <mat-card-header>
           <mat-card-title>
-            {{ isEditing ? 'Edit Employee' : 'Add New Employee' }}
+            {{ isEditing ? 'Editar Empleado' : 'Agregar Nuevo Empleado' }}
           </mat-card-title>
         </mat-card-header>
         
@@ -37,56 +37,56 @@ import { Employee } from '../../models/employee.model';
           <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
             <div class="form-row">
               <mat-form-field>
-                <mat-label>First Name</mat-label>
+                <mat-label>Nombre</mat-label>
                 <input matInput formControlName="firstName" required>
                 <mat-error *ngIf="employeeForm.get('firstName')?.hasError('required')">
-                  First name is required
+                  El nombre es obligatorio
                 </mat-error>
               </mat-form-field>
               
               <mat-form-field>
-                <mat-label>Last Name</mat-label>
+                <mat-label>Apellido</mat-label>
                 <input matInput formControlName="lastName" required>
                 <mat-error *ngIf="employeeForm.get('lastName')?.hasError('required')">
-                  Last name is required
+                  El apellido es obligatorio
                 </mat-error>
               </mat-form-field>
             </div>
             
             <div class="form-row">
               <mat-form-field>
-                <mat-label>Email</mat-label>
+                <mat-label>Correo Electrónico</mat-label>
                 <input matInput formControlName="email" type="email" required>
                 <mat-error *ngIf="employeeForm.get('email')?.hasError('required')">
-                  Email is required
+                  El correo electrónico es obligatorio
                 </mat-error>
                 <mat-error *ngIf="employeeForm.get('email')?.hasError('email')">
-                  Please enter a valid email
+                  Ingrese un correo electrónico válido
                 </mat-error>
               </mat-form-field>
               
               <mat-form-field>
-                <mat-label>Position</mat-label>
+                <mat-label>Cargo</mat-label>
                 <input matInput formControlName="position" required>
                 <mat-error *ngIf="employeeForm.get('position')?.hasError('required')">
-                  Position is required
+                  El cargo es obligatorio
                 </mat-error>
               </mat-form-field>
             </div>
             
             <div class="form-row">
               <mat-form-field>
-                <mat-label>Hire Date</mat-label>
+                <mat-label>Fecha de Contratación</mat-label>
                 <input matInput [matDatepicker]="picker" formControlName="hireDate" required>
                 <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <mat-error *ngIf="employeeForm.get('hireDate')?.hasError('required')">
-                  Hire date is required
+                  La fecha de contratación es obligatoria
                 </mat-error>
               </mat-form-field>
               
               <mat-form-field>
-                <mat-label>Salary</mat-label>
+                <mat-label>Salario</mat-label>
                 <input matInput formControlName="salary" type="number" min="0">
               </mat-form-field>
             </div>
@@ -97,10 +97,10 @@ import { Employee } from '../../models/employee.model';
           <button mat-raised-button color="primary" 
                   (click)="onSubmit()" 
                   [disabled]="!employeeForm.valid">
-            {{ isEditing ? 'Update' : 'Create' }} Employee
+            {{ isEditing ? 'Actualizar' : 'Crear' }} Empleado
           </button>
           <button mat-button (click)="onCancel()">
-            Cancel
+            Cancelar
           </button>
         </mat-card-actions>
       </mat-card>
