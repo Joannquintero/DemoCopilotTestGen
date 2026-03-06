@@ -39,14 +39,47 @@ import { Employee } from '../../models/employee.model';
             <div class="header-actions">
               <h2>Gestión de Empleados</h2>
               <div class="actions">
-                <mat-form-field appearance="outline" class="search-field">
-                  <mat-label>Buscar empleados...</mat-label>
-                  <input matInput 
-                         [(ngModel)]="searchTerm" 
-                         (input)="onSearchChange()"
-                         placeholder="Buscar por nombre o cargo">
-                  <mat-icon matSuffix>search</mat-icon>
-                </mat-form-field>
+                <div class="filters-container">
+                  <mat-form-field appearance="outline" class="search-field">
+                    <mat-label>Buscar empleados...</mat-label>
+                    <input matInput 
+                           [(ngModel)]="searchTerm" 
+                           (input)="onSearchChange()"
+                           placeholder="Buscar por nombre o cargo">
+                    <mat-icon matSuffix>search</mat-icon>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline" class="salary-field">
+                    <mat-label>Salario mínimo</mat-label>
+                    <input matInput 
+                           type="number" 
+                           [(ngModel)]="minSalary" 
+                           (input)="onSalaryFilterChange()" 
+                           placeholder="0"
+                           min="0">
+                    <span matPrefix>$&nbsp;</span>
+                  </mat-form-field>
+                  
+                  <mat-form-field appearance="outline" class="salary-field">
+                    <mat-label>Salario máximo</mat-label>
+                    <input matInput 
+                           type="number" 
+                           [(ngModel)]="maxSalary" 
+                           (input)="onSalaryFilterChange()" 
+                           placeholder="Sin límite"
+                           min="0">
+                    <span matPrefix>$&nbsp;</span>
+                  </mat-form-field>
+                  
+                  <button 
+                    mat-icon-button 
+                    (click)="clearFilters()"
+                    matTooltip="Limpiar filtros"
+                    class="clear-filters-btn">
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </div>
+                
                 <button 
                   mat-raised-button 
                   color="primary" 
@@ -183,8 +216,23 @@ import { Employee } from '../../models/employee.model';
       gap: 16px;
     }
 
+    .filters-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .search-field {
       width: 300px;
+    }
+
+    .salary-field {
+      width: 160px;
+    }
+
+    .clear-filters-btn {
+      margin-top: 8px;
     }
 
     .loading-container, 
@@ -263,7 +311,13 @@ import { Employee } from '../../models/employee.model';
         align-items: stretch;
       }
 
-      .search-field {
+      .filters-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-field,
+      .salary-field {
         width: 100%;
       }
     }
@@ -276,20 +330,27 @@ export class EmployeeListComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   searchTerm = '';
+  minSalary: number | null = null;
+  maxSalary: number | null = null;
   displayedColumns: string[] = ['fullName', 'email', 'position', 'salary', 'hireDate', 'actions'];
 
   filteredEmployees = computed(() => {
     const employees = this.employeeService.employees();
-    if (!this.searchTerm) {
-      return employees;
-    }
     
-    const term = this.searchTerm.toLowerCase();
-    return employees.filter(employee => 
-      employee.fullName.toLowerCase().includes(term) ||
-      employee.email.toLowerCase().includes(term) ||
-      employee.position.toLowerCase().includes(term)
-    );
+    return employees.filter(employee => {
+      // Filtro por término de búsqueda
+      const matchesSearch = !this.searchTerm || 
+        employee.fullName.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        employee.email.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        employee.position.toLowerCase().includes(this.searchTerm.toLowerCase());
+      
+      // Filtro por rango salarial
+      const matchesSalary = 
+        (!this.minSalary || employee.salary >= this.minSalary) &&
+        (!this.maxSalary || employee.salary <= this.maxSalary);
+      
+      return matchesSearch && matchesSalary;
+    });
   });
 
   ngOnInit(): void {
@@ -307,6 +368,16 @@ export class EmployeeListComponent implements OnInit {
 
   onSearchChange(): void {
     // The computed signal will automatically update the filtered results
+  }
+
+  onSalaryFilterChange(): void {
+    // The computed signal will automatically update the filtered results
+  }
+
+  clearFilters(): void {
+    this.searchTerm = '';
+    this.minSalary = null;
+    this.maxSalary = null;
   }
 
   createEmployee(): void {

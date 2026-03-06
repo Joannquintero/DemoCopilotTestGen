@@ -7,6 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:coverage": "ng test --code-coverage --watch=false",
+    "test:coverage:open": "ng test --code-coverage --watch=false && start coverage\\employee-crud-angular\\index.html",
+    "coverage:open": "start coverage\\employee-crud-angular\\index.html",
+    "coverage:serve": "npx http-server coverage/employee-crud-angular -p 8080 -o",
     "serve:ssr": "node dist/employee-crud-angular/server/server.mjs"
   },
   "private": true,
