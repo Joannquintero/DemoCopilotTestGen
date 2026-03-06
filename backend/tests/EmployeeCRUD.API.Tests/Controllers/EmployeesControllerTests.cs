@@ -199,6 +199,233 @@ public class EmployeesControllerTests
 
     #endregion
 
+    #region GetEmployeeByEmail Tests
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_ExistingEmployee_ShouldReturnOkWithEmployee()
+    {
+        // Arrange
+        var employeeEmail = "john.doe@example.com";
+        var employee = new EmployeeDto 
+        { 
+            Id = 1, 
+            FirstName = "John", 
+            LastName = "Doe", 
+            FullName = "John Doe", 
+            Email = employeeEmail,
+            Position = "Developer",
+            Salary = 75000
+        };
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(employee);
+
+        // Act
+        var result = await _controller.GetEmployeeByEmail(employeeEmail);
+
+        // Assert
+        result.Should().NotBeNull();
+        var actionResult = result.Result as OkObjectResult;
+        actionResult.Should().NotBeNull();
+        actionResult!.StatusCode.Should().Be(200);
+        var returnedEmployee = actionResult.Value as EmployeeDto;
+        returnedEmployee.Should().NotBeNull();
+        returnedEmployee!.Email.Should().Be(employeeEmail);
+        returnedEmployee.FirstName.Should().Be("John");
+        returnedEmployee.LastName.Should().Be("Doe");
+        actionResult.Value.Should().BeEquivalentTo(employee);
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_NonExistingEmployee_ShouldReturnNotFound()
+    {
+        // Arrange
+        var employeeEmail = "nonexisting@example.com";
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync((EmployeeDto?)null);
+
+        // Act
+        var result = await _controller.GetEmployeeByEmail(employeeEmail);
+
+        // Assert
+        result.Should().NotBeNull();
+        var actionResult = result.Result as NotFoundObjectResult;
+        actionResult.Should().NotBeNull();
+        actionResult!.StatusCode.Should().Be(404);
+        actionResult.Value.Should().Be($"Employee with email {employeeEmail} was not found");
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_EmptyEmail_ShouldCallMediatorWithEmptyEmail()
+    {
+        // Arrange
+        var employeeEmail = "";
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync((EmployeeDto?)null);
+
+        // Act
+        var result = await _controller.GetEmployeeByEmail(employeeEmail);
+
+        // Assert
+        result.Should().NotBeNull();
+        var actionResult = result.Result as NotFoundObjectResult;
+        actionResult.Should().NotBeNull();
+        actionResult!.StatusCode.Should().Be(404);
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_NullEmail_ShouldCallMediatorWithNullEmail()
+    {
+        // Arrange
+        string? employeeEmail = null;
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync((EmployeeDto?)null);
+
+        // Act
+        var result = await _controller.GetEmployeeByEmail(employeeEmail!);
+
+        // Assert
+        result.Should().NotBeNull();
+        var actionResult = result.Result as NotFoundObjectResult;
+        actionResult.Should().NotBeNull();
+        actionResult!.StatusCode.Should().Be(404);
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_ValidEmailFormat_ShouldReturnEmployee()
+    {
+        // Arrange
+        var employeeEmail = "test.user+tag@example.com";
+        var employee = new EmployeeDto 
+        { 
+            Id = 100, 
+            FirstName = "Test", 
+            LastName = "User", 
+            FullName = "Test User", 
+            Email = employeeEmail,
+            Position = "Tester",
+            Salary = 65000
+        };
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(employee);
+
+        // Act
+        var result = await _controller.GetEmployeeByEmail(employeeEmail);
+
+        // Assert
+        result.Should().NotBeNull();
+        var actionResult = result.Result as OkObjectResult;
+        actionResult.Should().NotBeNull();
+        actionResult!.StatusCode.Should().Be(200);
+        var returnedEmployee = actionResult.Value as EmployeeDto;
+        returnedEmployee.Should().NotBeNull();
+        returnedEmployee!.Email.Should().Be(employeeEmail);
+        returnedEmployee.Id.Should().Be(100);
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_EmailWithSpecialCharacters_ShouldHandleCorrectly()
+    {
+        // Arrange
+        var employeeEmail = "user.name+123@sub-domain.example.org";
+        var employee = new EmployeeDto 
+        { 
+            Id = 200, 
+            FirstName = "Special", 
+            LastName = "Character", 
+            FullName = "Special Character", 
+            Email = employeeEmail,
+            Position = "Manager",
+            Salary = 95000
+        };
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(employee);
+
+        // Act
+        var result = await _controller.GetEmployeeByEmail(employeeEmail);
+
+        // Assert
+        result.Should().NotBeNull();
+        var actionResult = result.Result as OkObjectResult;
+        actionResult.Should().NotBeNull();
+        actionResult!.StatusCode.Should().Be(200);
+        var returnedEmployee = actionResult.Value as EmployeeDto;
+        returnedEmployee.Should().NotBeNull();
+        returnedEmployee!.Email.Should().Be(employeeEmail);
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_MediatorThrowsException_ShouldPropagateException()
+    {
+        // Arrange
+        var employeeEmail = "test@example.com";
+        var expectedException = new InvalidOperationException("Database connection failed");
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ThrowsAsync(expectedException);
+
+        // Act & Assert
+        var act = async () => await _controller.GetEmployeeByEmail(employeeEmail);
+
+        await act.Should().ThrowAsync<InvalidOperationException>()
+                 .WithMessage("Database connection failed");
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [TestMethod]
+    public async Task GetEmployeeByEmail_CaseSensitiveEmail_ShouldHandleExactCase()
+    {
+        // Arrange
+        var employeeEmail = "John.Doe@Example.COM";
+        var employee = new EmployeeDto 
+        { 
+            Id = 300, 
+            FirstName = "John", 
+            LastName = "Doe", 
+            FullName = "John Doe", 
+            Email = employeeEmail,
+            Position = "Senior Developer",
+            Salary = 85000
+        };
+
+        _mockMediator.Setup(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()))
+                   .ReturnsAsync(employee);
+
+        // Act
+        var result = await _controller.GetEmployeeByEmail(employeeEmail);
+
+        // Assert
+        result.Should().NotBeNull();
+        var actionResult = result.Result as OkObjectResult;
+        actionResult.Should().NotBeNull();
+        actionResult!.StatusCode.Should().Be(200);
+        var returnedEmployee = actionResult.Value as EmployeeDto;
+        returnedEmployee.Should().NotBeNull();
+        returnedEmployee!.Email.Should().Be(employeeEmail);
+
+        _mockMediator.Verify(x => x.Send(It.Is<GetEmployeeByEmailQuery>(q => q.Email == employeeEmail), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    #endregion
+
     #region GetEmployeesByPosition Tests
 
     [TestMethod]
