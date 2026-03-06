@@ -41,9 +41,27 @@ public class EmployeesController : ControllerBase
     public async Task<ActionResult<EmployeeDto>> GetEmployeeById(int id)
     {
         var employee = await _mediator.Send(new GetEmployeeByIdQuery(id));
-        
+
         if (employee == null)
             return NotFound($"Employee with ID {id} was not found");
+
+        return Ok(employee);
+    }
+
+    /// <summary>
+    /// Retrieves a specific employee by email
+    /// </summary>
+    /// <param name="email">Employee email</param>
+    /// <returns>Employee details</returns>
+    [HttpGet("by-email/{email}")]
+    [ProducesResponseType(typeof(EmployeeDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<EmployeeDto>> GetEmployeeByEmail(string email)
+    {
+        var employee = await _mediator.Send(new GetEmployeeByEmailQuery(email));
+
+        if (employee == null)
+            return NotFound($"Employee with email {email} was not found");
 
         return Ok(employee);
     }

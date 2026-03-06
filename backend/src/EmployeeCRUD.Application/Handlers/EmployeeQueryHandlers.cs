@@ -42,6 +42,24 @@ public class GetEmployeeByIdQueryHandler : IRequestHandler<GetEmployeeByIdQuery,
     }
 }
 
+public class GetEmployeeByEmailQueryHandler : IRequestHandler<GetEmployeeByEmailQuery, EmployeeDto?>
+{
+    private readonly IEmployeeRepository _repository;
+    private readonly IMapper _mapper;
+
+    public GetEmployeeByEmailQueryHandler(IEmployeeRepository repository, IMapper mapper)
+    {
+        _repository = repository;
+        _mapper = mapper;
+    }
+
+    public async Task<EmployeeDto?> Handle(GetEmployeeByEmailQuery request, CancellationToken cancellationToken)
+    {
+        var employee = await _repository.GetByEmailAsync(request.Email);
+        return employee == null ? null : _mapper.Map<EmployeeDto>(employee);
+    }
+}
+
 public class GetEmployeesByPositionQueryHandler : IRequestHandler<GetEmployeesByPositionQuery, IEnumerable<EmployeeDto>>
 {
     private readonly IEmployeeRepository _repository;
