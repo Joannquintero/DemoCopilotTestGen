@@ -18,23 +18,45 @@ import { CommonModule } from '@angular/common';
   template: `
     <mat-toolbar color="primary">
       <mat-toolbar-row>
-        <span>Employee Management System</span>
+        <span>Employee and Position Management System</span>
         <span class="spacer"></span>
-        <button 
-          mat-raised-button 
-          color="accent" 
-          (click)="navigateToEmployees()">
-          <mat-icon>people</mat-icon>
-          Employees
-        </button>
-        <button 
-          mat-raised-button 
-          color="accent" 
-          (click)="navigateToCreateEmployee()"
-          class="ml-2">
-          <mat-icon>person_add</mat-icon>
-          Add Employee
-        </button>
+        <div class="nav-section">
+          <span class="section-label">Employees:</span>
+          <button 
+            mat-raised-button 
+            color="accent" 
+            (click)="navigateToEmployees()">
+            <mat-icon>people</mat-icon>
+            List
+          </button>
+          <button 
+            mat-raised-button 
+            color="accent" 
+            (click)="navigateToCreateEmployee()"
+            class="ml-1">
+            <mat-icon>person_add</mat-icon>
+            Add
+          </button>
+        </div>
+        
+        <div class="nav-section">
+          <span class="section-label">Positions:</span>
+          <button 
+            mat-raised-button 
+            color="warn" 
+            (click)="navigateToPositions()">
+            <mat-icon>work</mat-icon>
+            List
+          </button>
+          <button 
+            mat-raised-button 
+            color="warn" 
+            (click)="navigateToCreatePosition()"
+            class="ml-1">
+            <mat-icon>add_business</mat-icon>
+            Add
+          </button>
+        </div>
       </mat-toolbar-row>
     </mat-toolbar>
     
@@ -53,12 +75,45 @@ import { CommonModule } from '@angular/common';
       background-color: #f5f5f5;
     }
     
-    .ml-2 {
-      margin-left: 8px;
+    .nav-section {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 16px;
+    }
+    
+    .section-label {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.9;
+      margin-right: 4px;
+    }
+    
+    .ml-1 {
+      margin-left: 4px;
     }
     
     mat-toolbar {
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    mat-toolbar-row {
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    @media (max-width: 768px) {
+      .nav-section {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 8px;
+      }
+      
+      mat-toolbar-row {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 8px 16px;
+      }
     }
   `]
 })
@@ -73,5 +128,14 @@ export class AppComponent {
 
   navigateToCreateEmployee(): void {
     this.router.navigate(['/employees/create']);
+  }
+
+  navigateToPositions(): void {
+    this.router.navigate(['/positions']);
+  }
+
+  navigateToCreatePosition(): void {
+    // Temporarily redirect to positions list until form is created
+    this.router.navigate(['/positions']);
   }
 }

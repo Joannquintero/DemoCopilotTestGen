@@ -63,6 +63,22 @@ describe('AppComponent', () => {
       // Assert
       expect(mockRouter.navigate).toHaveBeenCalledWith(['/employees/create']);
     });
+
+    it('debería navegar a la lista de cargos', () => {
+      // Act
+      component.navigateToPositions();
+
+      // Assert
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/positions']);
+    });
+
+    it('debería navegar al formulario de creación de cargos', () => {
+      // Act
+      component.navigateToCreatePosition();
+
+      // Assert
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['/positions/create']);
+    });
   });
 
   describe('renderizado del template', () => {
@@ -75,7 +91,7 @@ describe('AppComponent', () => {
       const titleElement = fixture.nativeElement.querySelector('mat-toolbar span');
 
       // Assert
-      expect(titleElement.textContent).toBe('Employee Management System');
+      expect(titleElement.textContent).toBe('Sistema de Gestión de Empleados y Cargos');
     });
 
     it('debería renderizar la barra de herramientas con color primario', () => {
@@ -87,13 +103,13 @@ describe('AppComponent', () => {
       expect(toolbar.getAttribute('color')).toBe('primary');
     });
 
-    it('debería mostrar botón de empleados con icono y texto correctos', () => {
+    it('debería mostrar botón de lista empleados con icono y texto correctos', () => {
       // Act
       const employeesButton = fixture.nativeElement.querySelector('button[color="accent"]');
       const buttonIcon = employeesButton.querySelector('mat-icon');
 
       // Assert
-      expect(employeesButton.textContent.trim()).toContain('Employees');
+      expect(employeesButton.textContent.trim()).toContain('Lista');
       expect(buttonIcon.textContent.trim()).toBe('people');
       expect(employeesButton.getAttribute('color')).toBe('accent');
     });
@@ -105,20 +121,27 @@ describe('AppComponent', () => {
       const buttonIcon = addEmployeeButton.querySelector('mat-icon');
 
       // Assert
-      expect(addEmployeeButton.textContent.trim()).toContain('Add Employee');
+      expect(addEmployeeButton.textContent.trim()).toContain('Agregar');
       expect(buttonIcon.textContent.trim()).toBe('person_add');
       expect(addEmployeeButton.getAttribute('color')).toBe('accent');
     });
 
-    it('debería tener clase ml-2 en el botón de agregar empleado', () => {
+    it('debería mostrar botones de cargos con colores correctos', () => {
       // Act
-      const addEmployeeButtons = fixture.nativeElement.querySelectorAll('button');
-      const addEmployeeButton = Array.from(addEmployeeButtons).find((btn: any) =>
-        btn.textContent.includes('Add Employee')
-      ) as HTMLElement;
+      const cargoButtons = fixture.nativeElement.querySelectorAll('button[color="warn"]');
 
       // Assert
-      expect(addEmployeeButton.classList.contains('ml-2')).toBe(true);
+      expect(cargoButtons.length).toBe(2);
+      expect(cargoButtons[0].textContent.trim()).toContain('Lista');
+      expect(cargoButtons[1].textContent.trim()).toContain('Agregar');
+    });
+
+    it('debería tener clase ml-1 en los botones secundarios', () => {
+      // Act  
+      const buttonsWithClass = fixture.nativeElement.querySelectorAll('.ml-1');
+
+      // Assert
+      expect(buttonsWithClass.length).toBeGreaterThan(0);
     });
 
     it('debería mostrar el contenido principal', () => {
