@@ -207,3 +207,4 @@ __pycache__/
 # Temporary folders
 tmp/
 temp/
+frontend/angular-app/.angular/cache/*
