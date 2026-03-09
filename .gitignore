@@ -207,4 +207,9 @@ __pycache__/
 # Temporary folders
 tmp/
 temp/
-frontend/angular-app/.angular/cache/*
+frontend/angular-app/.angular/cache/
+frontend/angular-app/.angular/
+frontend/react-app/node_modules/
+frontend/react-app/.cache/
+/.angular/cache/
+frontend/angular-app/.angular/cache/19.2.22/employee-crud-angular/vite/deps/*

@@ -61,7 +61,7 @@ describe('EmployeeList', () => {
       expect(
         screen.getByText('Gestión de Empleados')
       ).toBeInTheDocument();
-      expect(screen.getByText('3 empleados total')).toBeInTheDocument();
+      expect(screen.getByText('3 de 3 empleados')).toBeInTheDocument();
     });
 
     it('debe mostrar texto en singular cuando hay un solo empleado', () => {
@@ -74,7 +74,7 @@ describe('EmployeeList', () => {
 
       renderWithProviders(<EmployeeList />);
 
-      expect(screen.getByText('1 empleado total')).toBeInTheDocument();
+      expect(screen.getByText('1 de 1 empleado')).toBeInTheDocument();
     });
 
     it('debe mostrar todos los empleados en la tabla', () => {
@@ -203,13 +203,13 @@ describe('EmployeeList', () => {
     });
   });
 
-  describe('Búsqueda y filtrado', () => {
+  describe('Búsqueda y filtrado por texto', () => {
     it('debe filtrar empleados por nombre al escribir en el campo de búsqueda', async () => {
       const user = userEvent.setup();
       renderWithProviders(<EmployeeList />);
 
       const searchInput = screen.getByPlaceholderText(
-        'Buscar empleados...'
+        'Nombre, email o cargo...'
       );
       await user.type(searchInput, 'Juan');
 
@@ -224,7 +224,7 @@ describe('EmployeeList', () => {
       renderWithProviders(<EmployeeList />);
 
       const searchInput = screen.getByPlaceholderText(
-        'Buscar empleados...'
+        'Nombre, email o cargo...'
       );
       await user.type(searchInput, 'maria.garcia');
 
@@ -239,7 +239,7 @@ describe('EmployeeList', () => {
       renderWithProviders(<EmployeeList />);
 
       const searchInput = screen.getByPlaceholderText(
-        'Buscar empleados...'
+        'Nombre, email o cargo...'
       );
       await user.type(searchInput, 'Diseñadora');
 
@@ -254,7 +254,7 @@ describe('EmployeeList', () => {
       renderWithProviders(<EmployeeList />);
 
       const searchInput = screen.getByPlaceholderText(
-        'Buscar empleados...'
+        'Nombre, email o cargo...'
       );
       await user.type(searchInput, 'zzzzz');
 
@@ -271,11 +271,147 @@ describe('EmployeeList', () => {
       renderWithProviders(<EmployeeList />);
 
       const searchInput = screen.getByPlaceholderText(
-        'Buscar empleados...'
+        'Nombre, email o cargo...'
       );
       await user.type(searchInput, 'juan');
 
       expect(screen.getByText('Juan Pérez')).toBeInTheDocument();
+    });
+  });
+
+  describe('Filtros de salario', () => {
+    it('debe filtrar empleados por salario mínimo', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const minSalaryInput = screen.getByPlaceholderText('Ej: 30000');
+      await user.type(minSalaryInput, '70000');
+
+      // Solo Juan ($75,000) debe aparecer, María ($65,000) y Carlos ($50,000) no
+      expect(screen.getByText('Juan Pérez')).toBeInTheDocument();
+      expect(screen.queryByText('María García')).not.toBeInTheDocument();
+      expect(screen.queryByText('Carlos López')).not.toBeInTheDocument();
+    });
+
+    it('debe filtrar empleados por salario máximo', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const maxSalaryInput = screen.getByPlaceholderText('Ej: 100000');
+      await user.type(maxSalaryInput, '50000');
+
+      // Solo Carlos ($45,000) debe aparecer, Juan ($75,000) y María ($65,000) no
+      expect(screen.getByText('Carlos López')).toBeInTheDocument();
+      expect(screen.queryByText('Juan Pérez')).not.toBeInTheDocument();
+      expect(screen.queryByText('María García')).not.toBeInTheDocument();
+    });
+
+    it('debe filtrar empleados por rango de salario (mín y máx)', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const minSalaryInput = screen.getByPlaceholderText('Ej: 30000');
+      const maxSalaryInput = screen.getByPlaceholderText('Ej: 100000');
+      
+      await user.type(minSalaryInput, '50000');
+      await user.type(maxSalaryInput, '70000');
+
+      // Solo María ($65,000) debe aparecer
+      expect(screen.getByText('María García')).toBeInTheDocument();
+      expect(screen.queryByText('Juan Pérez')).not.toBeInTheDocument();
+      expect(screen.queryByText('Carlos López')).not.toBeInTheDocument();
+    });
+
+    it('debe combinar filtros de texto y salario', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const searchInput = screen.getByPlaceholderText('Nombre, email o cargo...');
+      const minSalaryInput = screen.getByPlaceholderText('Ej: 30000');
+      
+      await user.type(minSalaryInput, '60000');
+      await user.type(searchInput, 'Juan');
+
+      // Juan no debe aparecer porque aunque contiene 'Juan', su salario es $75,000 > $60,000
+      // En realidad sí debe aparecer porque su salario ($75,000) es >= $60,000
+      expect(screen.getByText('Juan Pérez')).toBeInTheDocument();
+      expect(screen.queryByText('María García')).not.toBeInTheDocument();
+    });
+
+    it('debe ignorar valores no numéricos en filtros de salario', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const minSalaryInput = screen.getByPlaceholderText('Ej: 30000');
+      await user.type(minSalaryInput, 'abc');
+
+      // Debe mostrar todos los empleados cuando el valor no es numérico
+      expect(screen.getByText('Juan Pérez')).toBeInTheDocument();
+      expect(screen.getByText('María García')).toBeInTheDocument();
+      expect(screen.getByText('Carlos López')).toBeInTheDocument();
+    });
+
+    it('debe mostrar todos los empleados cuando los campos de salario están vacíos', () => {
+      renderWithProviders(<EmployeeList />);
+
+      // Por defecto debe mostrar todos
+      expect(screen.getByText('Juan Pérez')).toBeInTheDocument();
+      expect(screen.getByText('María García')).toBeInTheDocument();
+      expect(screen.getByText('Carlos López')).toBeInTheDocument();
+    });
+
+    it('debe mostrar conteo actualizado cuando hay filtros activos', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const minSalaryInput = screen.getByPlaceholderText('Ej: 30000');
+      await user.type(minSalaryInput, '70000');
+
+      // Debe mostrar "1 de 3 empleados (filtrados)"
+      expect(screen.getByText('1 de 3 empleados (filtrados)')).toBeInTheDocument();
+    });
+  });
+
+  describe('Limpiar filtros', () => {
+    it('debe mostrar botón "Limpiar filtros" cuando hay filtros activos', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const searchInput = screen.getByPlaceholderText('Nombre, email o cargo...');
+      await user.type(searchInput, 'Juan');
+
+      expect(screen.getByText('Limpiar todos los filtros')).toBeInTheDocument();
+    });
+
+    it('no debe mostrar botón "Limpiar filtros" cuando no hay filtros activos', () => {
+      renderWithProviders(<EmployeeList />);
+
+      expect(screen.queryByText('Limpiar todos los filtros')).not.toBeInTheDocument();
+    });
+
+    it('debe limpiar todos los filtros al hacer clic en "Limpiar filtros"', async () => {
+      const user = userEvent.setup();
+      renderWithProviders(<EmployeeList />);
+
+      const searchInput = screen.getByPlaceholderText('Nombre, email o cargo...');
+      const minSalaryInput = screen.getByPlaceholderText('Ej: 30000');
+      const maxSalaryInput = screen.getByPlaceholderText('Ej: 100000');
+      
+      // Aplicar filtros
+      await user.type(searchInput, 'Juan');
+      await user.type(minSalaryInput, '50000');
+      await user.type(maxSalaryInput, '80000');
+      
+      // Limpiar filtros
+      await user.click(screen.getByText('Limpiar todos los filtros'));
+
+      // Verificar que los campos están vacíos y se muestran todos los empleados
+      expect(searchInput).toHaveValue('');
+      expect(minSalaryInput.value).toBe('');
+      expect(maxSalaryInput.value).toBe('');
+      expect(screen.getByText('Juan Pérez')).toBeInTheDocument();
+      expect(screen.getByText('María García')).toBeInTheDocument();
+      expect(screen.getByText('Carlos López')).toBeInTheDocument();
     });
   });
 
@@ -382,6 +518,7 @@ describe('EmployeeList', () => {
 
       expect(screen.getByText('$75,000')).toBeInTheDocument();
       expect(screen.getByText('$65,000')).toBeInTheDocument();
+      expect(screen.getByText('$45,000')).toBeInTheDocument();
     });
 
     it('debe mostrar los enlaces de correo electrónico correctamente', () => {

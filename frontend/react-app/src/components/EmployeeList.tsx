@@ -5,19 +5,33 @@ import { Employee } from '../types/employee';
 
 const EmployeeList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [minSalary, setMinSalary] = useState<string>('');
+  const [maxSalary, setMaxSalary] = useState<string>('');
   const { data: employees, isLoading, error, refetch } = useEmployees();
   const deleteEmployee = useDeleteEmployee();
 
   const filteredEmployees = useMemo(() => {
-    if (!employees || !searchTerm) return employees || [];
+    if (!employees) return [];
     
-    const term = searchTerm.toLowerCase();
-    return employees.filter(employee =>
-      employee.fullName.toLowerCase().includes(term) ||
-      employee.email.toLowerCase().includes(term) ||
-      employee.position.toLowerCase().includes(term)
-    );
-  }, [employees, searchTerm]);
+    return employees.filter(employee => {
+      // Filtro por término de búsqueda
+      const matchesSearch = !searchTerm || [
+        employee.fullName,
+        employee.email,
+        employee.position
+      ].some(field => field.toLowerCase().includes(searchTerm.toLowerCase()));
+      
+      // Filtro por salario mínimo
+      const minSalaryNum = parseFloat(minSalary);
+      const matchesMinSalary = !minSalary || isNaN(minSalaryNum) || employee.salary >= minSalaryNum;
+      
+      // Filtro por salario máximo
+      const maxSalaryNum = parseFloat(maxSalary);
+      const matchesMaxSalary = !maxSalary || isNaN(maxSalaryNum) || employee.salary <= maxSalaryNum;
+      
+      return matchesSearch && matchesMinSalary && matchesMaxSalary;
+    });
+  }, [employees, searchTerm, minSalary, maxSalary]);
 
   const handleDelete = async (employee: Employee) => {
     if (window.confirm(`¿Está seguro de que desea eliminar a ${employee.fullName}?`)) {
@@ -39,6 +53,14 @@ const EmployeeList: React.FC = () => {
       maximumFractionDigits: 0,
     }).format(salary);
   };
+
+  const clearFilters = () => {
+    setSearchTerm('');
+    setMinSalary('');
+    setMaxSalary('');
+  };
+
+  const hasActiveFilters = searchTerm || minSalary || maxSalary;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -83,27 +105,14 @@ const EmployeeList: React.FC = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Gestión de Empleados</h1>
             <p className="text-gray-600 mt-1">
-              {employees?.length || 0} empleado{employees?.length !== 1 ? 's' : ''} total
+              {filteredEmployees.length} de {employees?.length || 0} empleado{employees?.length !== 1 ? 's' : ''}
+              {hasActiveFilters && ' (filtrados)'}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Buscar empleados..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full sm:w-80"
-              />
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
-                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-            </div>
             <Link
               to="/employees/create"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center order-last sm:order-none"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -111,6 +120,82 @@ const EmployeeList: React.FC = () => {
               Agregar Empleado
             </Link>
           </div>
+        </div>
+        
+        {/* Filtros */}
+        <div className="mt-6 pt-6 border-t border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {/* Búsqueda por texto */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Buscar empleados
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Nombre, email o cargo..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full"
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            {/* Salario mínimo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Salario mínimo
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  placeholder="Ej: 30000"
+                  value={minSalary}
+                  onChange={(e) => setMinSalary(e.target.value)}
+                  className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full"
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <span className="text-gray-400 text-sm">$</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Salario máximo */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Salario máximo
+              </label>
+              <div className="relative">
+                <input
+                  type="number"
+                  placeholder="Ej: 100000"
+                  value={maxSalary}
+                  onChange={(e) => setMaxSalary(e.target.value)}
+                  className="pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 w-full"
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center">
+                  <span className="text-gray-400 text-sm">$</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Botón de limpiar filtros */}
+          {hasActiveFilters && (
+            <div className="mt-4 text-right">
+              <button
+                onClick={clearFilters}
+                className="text-sm text-gray-600 hover:text-gray-800 underline"
+              >
+                Limpiar todos los filtros
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
