@@ -48,14 +48,6 @@ import { CommonModule } from '@angular/common';
             <mat-icon>work</mat-icon>
             List
           </button>
-          <button 
-            mat-raised-button 
-            color="warn" 
-            (click)="navigateToCreatePosition()"
-            class="ml-1">
-            <mat-icon>add_business</mat-icon>
-            Add
-          </button>
         </div>
       </mat-toolbar-row>
     </mat-toolbar>
@@ -131,11 +123,6 @@ export class AppComponent {
   }
 
   navigateToPositions(): void {
-    this.router.navigate(['/positions']);
-  }
-
-  navigateToCreatePosition(): void {
-    // Temporarily redirect to positions list until form is created
     this.router.navigate(['/positions']);
   }
 }

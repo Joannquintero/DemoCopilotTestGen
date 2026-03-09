@@ -79,14 +79,6 @@ import { Position } from '../../models/position.model';
                     Clear Filters
                   </button>
                 </div>
-                
-                <button 
-                  mat-raised-button 
-                  color="primary" 
-                  (click)="createPosition()">
-                  <mat-icon>work</mat-icon>
-                  Add Position
-                </button>
               </div>
             </div>
           </mat-card-title>
@@ -205,14 +197,6 @@ import { Position } from '../../models/position.model';
               <h3>No positions found</h3>
               <p *ngIf="searchTerm || selectedDepartment || !activeOnly">Try adjusting your search criteria.</p>
               <p *ngIf="!searchTerm && !selectedDepartment && activeOnly">Start by adding your first position.</p>
-              <button 
-                mat-raised-button 
-                color="primary" 
-                (click)="createPosition()"
-                *ngIf="positionService.positions().length === 0">
-                <mat-icon>work</mat-icon>
-                Add First Position
-              </button>
             </div>
           </div>
         </mat-card-content>
@@ -482,14 +466,6 @@ export class PositionListComponent implements OnInit {
 
   getDepartments(): string[] {
     return this.departments();
-  }
-
-  createPosition(): void {
-    // Temporarily redirect to positions list until form is created
-    this.snackBar.open('Position creation form will be available soon', 'Close', {
-      duration: 3000,
-      panelClass: ['info-snackbar']
-    });
   }
 
   viewPosition(id: number): void {
